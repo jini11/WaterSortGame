@@ -65,7 +65,8 @@ public class GameView extends JFrame {
 		postBottle = 100;
     }
     
-    public void printLayout(int maxColors, int maxBottles) {  
+    public void printLayout(int maxColors, int maxBottles, int level) {  
+    	this.level = level;
     	this.maxColors = maxColors;
     	this.maxBottles = maxBottles;
     	Level();
@@ -95,7 +96,9 @@ public class GameView extends JFrame {
     	setTitle("WaterSort");
         setLayout(null);
     	setSize(600,500);
-        
+    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	setLocationRelativeTo(null);
+    	
     	outAction();
     	undoAction();
     	timerAction();
