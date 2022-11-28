@@ -513,7 +513,7 @@ public class GameView extends JFrame {
         						}
     						}
     					}
-    					
+    					setView();
     					new ResultView(level, moveCnt, second, millisecond);
     					thread.interrupt();
     		        	break;
@@ -530,4 +530,5 @@ public class GameView extends JFrame {
     	}
 
     }
+
 }

@@ -70,9 +70,9 @@ public class ResultView extends JFrame {
 		rankBtn.addActionListener(new ActionListener() {
     		@Override
     		public void actionPerformed(ActionEvent e) {
+    			setVisible(false);
     			dispose();
     			new RankController();
-    			back();
     		}
     	});
 
@@ -81,7 +81,6 @@ public class ResultView extends JFrame {
     		public void actionPerformed(ActionEvent e) {
     			setVisible(false);
     			new LevelController();
-    			back();
     		}
     	});
     	
@@ -91,12 +90,7 @@ public class ResultView extends JFrame {
     		public void actionPerformed(ActionEvent e) {
     			setVisible(false);
     			new MenuController();
-    			back();
     		}
     	});
 	}
-	
-	public void back() {
-    	setVisible(false);
-    }
 }

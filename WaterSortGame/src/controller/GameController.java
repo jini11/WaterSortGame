@@ -10,7 +10,8 @@ public class GameController {
 	
 	public GameController(int level) {
 		List<Integer> max = Level.getMax(level);
-		gameView.printLayout(max.get(0), max.get(1));
+		gameView.printLayout(max.get(0), max.get(1), level);
+		
 		//gameView.getOut().addActionListener(new OutAction());
 		//gameView.getUndo().addActionListener(new UndoAction());
 		//gameView.getTimer().addMouseListener(new TimerAction());
