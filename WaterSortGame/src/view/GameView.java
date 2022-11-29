@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import javax.swing.ImageIcon;
@@ -20,6 +21,7 @@ import javax.swing.JOptionPane;
 
 import DB.DataBase;
 import controller.MenuController;
+import model.State;
 import model.User;
 import utils.ImageUtil;
 import utils.Timer;
@@ -30,11 +32,7 @@ public class GameView extends JFrame {
 	private int maxColors;
 	private int maxBottles;
 	private int[] colorType;
-	private int moveCnt;
-	private int To;
-	private int From;
-	private int count;
-	private int backLimit;
+	private boolean clickFrom;
 	private JLabel[] bottle;
 	private JLabel[] bottleBorder;
 	private Thread thread;
@@ -49,20 +47,16 @@ public class GameView extends JFrame {
     
     private ImageIcon fromBottle = util.makeImage("image/bottle.png", 140, 170);
     private ImageIcon toBottle = util.makeImage("image/bottle3.png", 140, 170);
-    private int postBottle;
     
     private Color[] waterColor = {Color.red, Color.blue, Color.green, Color.pink, Color.cyan, Color.gray, Color.orange};
 	
-    private int second;
-    private int millisecond;
+//    private int second;
+//    private int millisecond;
+    
+    private State state;
     
     public GameView() {
-    	moveCnt = 0;
-		To = 100;
-		From = 100;
-		count = 0;
-		backLimit = 2;
-		postBottle = 100;
+    	state = new State();
     }
     
     public void printLayout(int maxColors, int maxBottles, int level) {  
@@ -117,7 +111,7 @@ public class GameView extends JFrame {
     }
     
     private void outAction() {
-    	JButton outBtn = util.makeUI("image/Back.png", 100);
+    	outBtn = util.makeUI("image/Back.png", 100);
     	outBtn.setLocation(20, 20);
     	outBtn.setSize(100, 50);
     	outBtn.setVisible(true);
@@ -141,9 +135,9 @@ public class GameView extends JFrame {
     	undoBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	if(backLimit >= 0) {
-					To = 10;
-					From = 10;
+            	if(state.getBackLimit() >= 0) {
+            		state.setFrom(10);
+            		state.setTo(10);
 				}
             }
         });
@@ -171,7 +165,7 @@ public class GameView extends JFrame {
         }
     }
     
-    private void showAll() {
+    public void showAll() {
     	for(int i = 0; i< bottle.length; i++) {
     		if(bottle[i] != null) {
     			bottle[i].setVisible(false);
@@ -220,21 +214,21 @@ public class GameView extends JFrame {
         return (int) ((Math.random() * (max - min)) + min);
     }  
     
-    public JButton getOut() {
-    	return outBtn;
-    }
-    
-    public JButton getUndo() {
-    	return undoBtn;
-    }
-    
-    public JLabel getTimer() {
-    	return time;
-    }
-    
-    public JLabel getBottle(int idx) {
-    	return bottleBorder[idx];
-    }
+//    public JButton getOut() {
+//    	return outBtn;
+//    }
+//    
+//    public JButton getUndo() {
+//    	return undoBtn;
+//    }
+//    
+//    public JLabel getTimer() {
+//    	return time;
+//    }
+//    
+//    public JLabel getBottle(int idx) {
+//    	return bottleBorder[idx];
+//    }
     
     public void setView() {
     	setVisible(false);
@@ -285,7 +279,7 @@ public class GameView extends JFrame {
         return temp;
     }
 
-    private boolean isValidMove(int from, int to) {
+    public boolean isValidMove(int from, int to) {
     	
         if (bottles[from].size() == 0) { // from bottle이 0인 경우
         	System.out.println("empty");
@@ -315,8 +309,8 @@ public class GameView extends JFrame {
 
             } while (peek(from) == peek(to));
             backMovesCounter.push(excount);
-            moveCnt++;
-            System.out.println("moves : " + moveCnt );
+            state.plusMoveCnt();
+            //System.out.println("moves : " + moveCnt );
             return true;
             
         } 
@@ -341,15 +335,15 @@ public class GameView extends JFrame {
             
             backMovesCounter.push(excount2);
             System.out.println("backmove = " + backMovesCounter.peek());
-            moveCnt++;
-            System.out.println("moves : " + moveCnt );
+            state.plusMoveCnt();
+            //System.out.println("moves : " + moveCnt );
             return true;
 
         } 
         return false;
     }
 
-    private void undo() { // 뒤로 가기 액션
+    public void undo() { // 뒤로 가기 액션
     	int undoTo = 0;
     	int undoFrom = 0;
     	int peekCount = 0;
@@ -385,24 +379,24 @@ public class GameView extends JFrame {
 
     public void operation() {    	
     	try {
-    		if (From == 10 && To == 10) {
+    		if (state.getFrom() == 10 && state.getTo() == 10) {
     			undo();
-    			System.out.println("backcount =" + backLimit);
-    			backLimit--;
-                From = 7;
-                To = 7;
-    		} else if (From != 100 && To != 100) {
+    			//System.out.println("backcount =" + backLimit);
+    			state.minusLimit();
+    			state.setFrom(7);
+    			state.setTo(7);
+    		} else if (state.getFrom() != 100 && state.getTo() != 100) {
 
-                if (isValidMove(From, To)) {
+                if (isValidMove(state.getFrom(), state.getTo())) {
                     //System.out.println("move");
                     showAll();
-                    From = 100;
-                    To = 100;
+                    state.setFrom(100);
+                    state.setTo(100);
                 } else {
                 	//System.out.println("move ex");
                     showAll();
-                    From = 100;
-                    To = 100;
+                    state.setFrom(100);
+                    state.setTo(100);
                 }
             }
 		} catch (Exception e) {
@@ -423,17 +417,17 @@ public class GameView extends JFrame {
 			JLabel click = (JLabel)e.getSource();
 			for(int i = 0; i < maxBottles; i++) {
 				if(bottleBorder[i] == click) {
-					if(count == 1) {
-						bottleBorder[postBottle].setIcon(fromBottle);
-						count--;
-						To = i;
-						postBottle = 100;
-					}
-					else {
+					if(!clickFrom) {
 						bottleBorder[i].setIcon(toBottle);
-						count++;
-						From = i;
-						postBottle = i;
+						clickFrom = true;
+						state.setFrom(i);
+						state.setCurrent(i);
+					}
+					else {						
+						bottleBorder[state.getCurrent()].setIcon(fromBottle);
+						clickFrom = false;
+						state.setTo(i);
+						state.setCurrent(100);
 					}
 				}
 			}
@@ -457,11 +451,11 @@ public class GameView extends JFrame {
 	
 	class Timer extends JFrame implements Runnable {
     	
-    	//private Clear clear;
     	private JLabel time;
-    	
+    	private int second;
+        private int millisecond;
+        
     	public Timer(JLabel time) {
-    		//clear = new Clear();
     		this.time = time;
     	}
     	
@@ -478,43 +472,34 @@ public class GameView extends JFrame {
             		time.setText(Integer.toString(second) +  " : " + Integer.toString(millisecond));
     				
     				operation();
+    				
     				if(isSolved()) {
     					DataBase dataBase = new DataBase();
     					
-    					//clear.run(level);
     					System.out.println("시간 = " + second + ":" + millisecond);
     					
     					User user = new User();
     					int id = user.getUserId();
-    					int userlevel = dataBase.checklevel(id, level);
     					int userTime = dataBase.getTime(id, level);
+    					int userMove = dataBase.getMove(id, level);
     					
-    					ResultSet result = dataBase.getResult(id);
     					String timelabel = time.getText().toString();
-    					System.out.println(timelabel);
+    					//System.out.println(timelabel);
     					int time = Integer.parseInt(timelabel.split(" : ")[0]);
     					
-    					if (!result.next()) {
-    						String insertSql = "insert into game (user_id, level, move, time) values (" + id + "," + level + "," + moveCnt + "," + time + ");";
-    						if(dataBase.updateResult(insertSql)) {
+    					if (userTime == 0 && userMove == 0) {
+    						if(dataBase.insertResult(id, level, state.getMoveCnt(), time)) {
     							JOptionPane.showMessageDialog(null, "순위 등록 완료");
     						}
     					} else {
-    						if(userlevel < level) {
-    							String insertSql = "insert into game (use"
-        								+ "r_id, level, move, time) values (" + id + "," + level + "," + moveCnt + "," + time + ");";
-        						if(dataBase.updateResult(insertSql)) {
-        							JOptionPane.showMessageDialog(null, "레벨 순위 등록 완료");
-        						}
-    						} else if(userTime > time) {
-								String updateSql = "update game set move=" + moveCnt + ", time=" + time + " where user_id=" + id + " and level=" + level + ";";
-        						if (dataBase.updateResult(updateSql)) {
-        							JOptionPane.showMessageDialog(null, "순위 갱신 완료");
-        						}
+							if(userTime > time || userMove > state.getMoveCnt()) {
+								if (dataBase.updateResult(id, level, state.getMoveCnt(), time)) {
+	    							JOptionPane.showMessageDialog(null, "순위 갱신 완료");
+	    						}
     						}
     					}
     					setView();
-    					new ResultView(level, moveCnt, second, millisecond);
+    					new ResultView(level, state.getMoveCnt(), second, millisecond);
     					thread.interrupt();
     		        	break;
 
@@ -522,9 +507,7 @@ public class GameView extends JFrame {
     				Thread.sleep(100);
     			} catch (InterruptedException e) {
     				e.printStackTrace();
-    			} catch (SQLException e) {
-					e.printStackTrace();
-				}
+    			}
     		}
     		
     	}

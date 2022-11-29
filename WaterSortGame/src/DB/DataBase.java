@@ -50,25 +50,25 @@ public class DataBase extends JFrame{
 		return 0;
 	}
 	
-	public int checklevel(int user_id, int level) {
-		try {
-			String logInSql = "select level from game where user_id='" + user_id + "';";
-			
-			ResultSet result = stmt.executeQuery(logInSql);
-			
-			while (result.next()) {
-				if(result.getInt(1) == level) {
-					return result.getInt(1);
-				}
-				
-			}
-			
-		} catch (SQLException e) {
-			System.out.println("레벨 SQL 오류");
-		}
-		
-		return 0;
-	}
+//	public int checklevel(int user_id, int level) {
+//		try {
+//			String logInSql = "select level from game where user_id='" + user_id + "';";
+//			
+//			ResultSet result = stmt.executeQuery(logInSql);
+//			
+//			while (result.next()) {
+//				if(result.getInt(1) == level) {
+//					return result.getInt(1);
+//				}
+//				
+//			}
+//			
+//		} catch (SQLException e) {
+//			System.out.println("레벨 SQL 오류");
+//		}
+//		
+//		return 0;
+//	}
 	
 	public int getLevel(int user_id) {
 		int countLevel = 0;
@@ -111,6 +111,27 @@ public class DataBase extends JFrame{
 		return countTime;
 	}
 	
+	public int getMove(int user_id, int level) {
+		int Level = level;
+		int move = 0;
+		try {
+			String sql = "select level, move from game where user_id='" + user_id + "';";
+			
+			ResultSet result = stmt.executeQuery(sql);
+			
+			while (result.next()) {
+				if(result.getInt(1) == Level) {
+					move = result.getInt(2);
+				}
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("레벨 SQL 오류a");
+		}
+		
+		return move;
+	}
+	
 	public ResultSet scoreInquiryByMove(int level) {
 		ResultSet result = null;
 		
@@ -137,10 +158,31 @@ public class DataBase extends JFrame{
 		return result;
 	}
 	
-	public boolean updateResult(String sql) {
-		System.out.println(sql);
+	public boolean insertResult(int id, int level, int move, int time) {
+		String sql = "insert into game (user_id, level, move, time) values (?, ?, ?, ?);";
 		try {
-			stmt.executeUpdate(sql);
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+			pstmt.setInt(2, level);
+			pstmt.setInt(3, move);
+			pstmt.setInt(4, time);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("insert SQL 오류");
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean updateResult(int id, int level, int move, int time) {
+		String updateSql = "update game set move=?, time=? where user_id=? and level=?;";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(updateSql);
+			pstmt.setInt(1, move);
+			pstmt.setInt(2, time);
+			pstmt.setInt(3, id);
+			pstmt.setInt(4, level);
+			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("update SQL 오류");
 			return false;
@@ -161,17 +203,17 @@ public class DataBase extends JFrame{
 		return result;
 	}
 	
-	public ResultSet getResult(int id) {
-		String sql = "select * from game where user_id = " + id + ";";
-		ResultSet result = null;
-		try {
-			result = stmt.executeQuery(sql);
-		} catch (SQLException e) {
-			System.out.println("get SQL 오류");
-		}
-		
-		return result;
-	}
+//	public ResultSet getResult(int id, int level) {
+//		String sql = "select * from game where user_id = " + id + " and level=" + level + ";";
+//		ResultSet result = null;
+//		try {
+//			result = stmt.executeQuery(sql);
+//		} catch (SQLException e) {
+//			System.out.println("get SQL 오류");
+//		}
+//		
+//		return result;
+//	}
 	
 	public boolean insertUser(String userId, String userPassword) {
 		String sql = "insert into user(username, password) values(?, ?)";
