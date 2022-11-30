@@ -73,8 +73,7 @@ public class JoinController {
         }
         
         private boolean validateIdType(String id) {
-        	//String pattern = "^[0-9|a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-핳]*$"; // 공백 혹은 특수문자가 입력된 경우(자바 정규식 참고)
-        	String pattern = "^[0-9|a-z|A-Z]*$";
+        	String pattern = "^[0-9|a-z|A-Z]*$"; // 공백 혹은 특수문자가 입력된 경우(자바 정규식 참고)
         	return !Pattern.matches(pattern, id);
         }
 		
@@ -89,12 +88,13 @@ public class JoinController {
 			String user_PASSWORD = info.get(1);
 			String user_PASSRE = info.get(2);
 			System.out.println(user_PASSWORD + " " + user_PASSRE);
-			if (!user_PASSWORD.equals(user_PASSRE)) { // 비밀번호가 동일하지 않을 경우									
-				JOptionPane.showMessageDialog(null, "비밀번호가 서로 맞지 않습니다", "비밀번호 오류", 1);	
+			
+			if (!user_PASSWORD.equals(user_PASSRE)) { // 비밀번호가 동일하지 않을 경우		
+				JOptionPane.showMessageDialog(null, "비밀번호가 서로 맞지 않습니다", "비밀번호 오류", JOptionPane.ERROR_MESSAGE);	
 			} else if(user_ID.equals("") || user_PASSWORD.equals("")) { // 정보 입력 제대로 안했을 경우
-				JOptionPane.showMessageDialog(null, "정보 입력을 제대로 해주세요!", "입력오류", 1);
+				JOptionPane.showMessageDialog(null, "정보 입력을 제대로 해주세요!", "입력오류", JOptionPane.ERROR_MESSAGE);
 			} else if(isDuplicate) { // id 중복확인을 안했을 경우
-				JOptionPane.showMessageDialog(null, "아이디 중복확인을 해주세요!", "중복확인", 1);
+				JOptionPane.showMessageDialog(null, "아이디 중복확인을 해주세요!", "중복확인", JOptionPane.ERROR_MESSAGE);
 			} else {																				
 				DataBase dataBase = new DataBase();
 				
