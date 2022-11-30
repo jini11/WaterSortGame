@@ -174,14 +174,29 @@ public class DataBase extends JFrame{
 		return true;
 	}
 	
-	public boolean updateResult(int id, int level, int move, int time) {
-		String updateSql = "update game set move=?, time=? where user_id=? and level=?;";
+	public boolean updateTime(int id, int level, int time) {
+		String updateSql = "update game set time=? where user_id=? and level=?;";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(updateSql);
+			pstmt.setInt(1, time);
+			pstmt.setInt(2, id);
+			pstmt.setInt(3, level);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("update SQL 오류");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean updateMove(int id, int level, int move) {
+		String updateSql = "update game set move=? where user_id=? and level=?;";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(updateSql);
 			pstmt.setInt(1, move);
-			pstmt.setInt(2, time);
-			pstmt.setInt(3, id);
-			pstmt.setInt(4, level);
+			pstmt.setInt(2, id);
+			pstmt.setInt(3, level);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("update SQL 오류");

@@ -487,13 +487,17 @@ public class GameView extends JFrame {
     					//System.out.println(timelabel);
     					int time = Integer.parseInt(timelabel.split(" : ")[0]);
     					
-    					if (userTime == 0 && userMove == 0) {
+    					if (userTime == 0 && userMove == 0) { // 등록된 정보가 없을 경우
     						if(dataBase.insertResult(id, level, state.getMoveCnt(), time)) {
     							JOptionPane.showMessageDialog(null, "순위 등록 완료");
     						}
     					} else {
-							if(userTime > time || userMove > state.getMoveCnt()) {
-								if (dataBase.updateResult(id, level, state.getMoveCnt(), time)) {
+							if(userTime > time) { // 시간 갱신
+								if (dataBase.updateTime(id, level, time)) {
+	    							JOptionPane.showMessageDialog(null, "순위 갱신 완료");
+	    						}
+    						} else if (userMove > state.getMoveCnt()) { // 움직인 횟수 갱신
+    							if (dataBase.updateMove(id, level, state.getMoveCnt())) {
 	    							JOptionPane.showMessageDialog(null, "순위 갱신 완료");
 	    						}
     						}
