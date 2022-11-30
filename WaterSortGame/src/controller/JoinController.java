@@ -32,37 +32,40 @@ public class JoinController {
 			DataBase db = new DataBase();
 			String id = joinView.getId();
             
-            validateId(id);
+            if (validateId(id)) {
             
-            try {
-              ResultSet result = db.selectResult();
-              
-              while(result.next()) {
-                   String user_ID = result.getString("username");
-                   if(id.equals(user_ID)) {
-                	   checkDuplicate = true; //중복된 곳 있을 경우
-                   }
-              }
-              
-              if(checkDuplicate) { // 아이디 중복되었을 경우
-             	 JOptionPane.showMessageDialog(null, "아이디가 중복되었습니다", "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
-             	checkDuplicate = false;
-             } else {
-              	JOptionPane.showMessageDialog(null, "중복된 아이디가 없습니다");
-              	joinView.setDuplicate();
-              	isDuplicate = false;
-              }
-            } catch (Exception e1) {}
-			
+	            try {
+	              ResultSet result = db.selectResult();
+	              
+	              while(result.next()) {
+	                   String user_ID = result.getString("username");
+	                   if(id.equals(user_ID)) {
+	                	   checkDuplicate = true; //중복된 곳 있을 경우
+	                   }
+	              }
+	              
+	              if(checkDuplicate) { // 아이디 중복되었을 경우
+	             	 JOptionPane.showMessageDialog(null, "아이디가 중복되었습니다", "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
+	             	checkDuplicate = false;
+	             } else {
+	              	JOptionPane.showMessageDialog(null, "중복된 아이디가 없습니다");
+	              	joinView.setDuplicate();
+	              	isDuplicate = false;
+	              }
+	            } catch (Exception e1) {}
+            }
 		}
 		
-		private void validateId(String id) {
+		private boolean validateId(String id) {
         	if (idIsEmpty(id)) {
-        		JOptionPane.showMessageDialog(null, "공백만 입력되었습니다", "입력 오류", JOptionPane.ERROR_MESSAGE);
+        		JOptionPane.showMessageDialog(null, "아이디를 입력해주세요", "입력 오류", JOptionPane.ERROR_MESSAGE);
+        		return false;
         	}
         	if (validateIdType(id)) {
-        		JOptionPane.showMessageDialog(null, "아이디에 공백 혹은 특수문자가 입력되었습니다", "입력 오류", JOptionPane.ERROR_MESSAGE);
+        		JOptionPane.showMessageDialog(null, "아이디는 영어, 숫자만 입력가능합니다", "입력 오류", JOptionPane.ERROR_MESSAGE);
+        		return false;
         	}
+        	return true;
         }
         
         private boolean idIsEmpty(String id) {
@@ -70,7 +73,8 @@ public class JoinController {
         }
         
         private boolean validateIdType(String id) {
-        	String pattern = "^[0-9|a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-핳]*$"; // 공백 혹은 특수문자가 입력된 경우(자바 정규식 참고)
+        	//String pattern = "^[0-9|a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-핳]*$"; // 공백 혹은 특수문자가 입력된 경우(자바 정규식 참고)
+        	String pattern = "^[0-9|a-z|A-Z]*$";
         	return !Pattern.matches(pattern, id);
         }
 		
