@@ -48,7 +48,7 @@ public class GameView extends JFrame {
     private ImageIcon fromBottle = util.makeImage("image/bottle.png", 140, 170);
     private ImageIcon toBottle = util.makeImage("image/bottle3.png", 140, 170);
     
-    private Color[] waterColor = {Color.red, Color.blue, Color.green, Color.pink, Color.cyan, Color.gray, Color.orange};
+    private Color[] waterColor = {Color.red, Color.blue, Color.green, Color.pink, Color.cyan, Color.gray, Color.orange, Color.lightGray};
 	
 //    private int second;
 //    private int millisecond;
@@ -241,8 +241,8 @@ public class GameView extends JFrame {
             if (!checkPaintType(x) || !checkBottleSize(x)) {
             	return false;
             }
-            showAll();
         }
+        showAll();
         return true;
     }
     

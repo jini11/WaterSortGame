@@ -6,7 +6,8 @@ public enum Level {
 	LEVEL1(1, 4, 6),
 	LEVEL2(2, 5, 7),
 	LEVEL3(3, 6, 8),
-	LEVEL4(4, 7, 9);
+	LEVEL4(4, 7, 9),
+	LEVEL5(5, 8, 10);
 	
 	private int level;
 	private int maxColor;

@@ -10,7 +10,7 @@ import view.LevelView;
 
 public class LevelController {
 	
-	private final int MAX_LEVEL = 6;
+	private final int MAX_LEVEL = 5;
 	private LevelView levelView = new LevelView();
 	private User user = new User();
 	

@@ -9,20 +9,23 @@ import javax.swing.JOptionPane;
 
 import DB.DataBase;
 import model.User;
+import view.GameView;
 
 public class Timer extends JFrame implements Runnable {
 	//private Clear clear;
 	private JLabel time;
-	private Thread thread;
+	//private Thread thread;
 	private int millisecond;
 	private int second;
+	private GameView gameView;
 	
-	public Timer(JLabel time, Thread thread) {
+	public Timer(JLabel time) {
 		//clear = new Clear();
 		this.time = time;
-		this.thread = thread;
+		//this.thread = thread;
 		this.second = 0;
 		this.millisecond = 0;
+		gameView = new GameView();
 	}
 	
 	public void run() {
@@ -37,7 +40,7 @@ public class Timer extends JFrame implements Runnable {
 				
         		time.setText(Integer.toString(second) +  " : " + Integer.toString(millisecond));
 				
-				//operation();
+				gameView.operation();
 				//if(isSolved()) {
 //					DataBase dataBase = new DataBase();
 //					
@@ -82,7 +85,8 @@ public class Timer extends JFrame implements Runnable {
 //		        }
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				return;
+				//e.printStackTrace();
 			} 
 		}
 		

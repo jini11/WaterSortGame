@@ -15,7 +15,7 @@ import utils.ImageUtil;
 
 public class LevelView extends JFrame {
 
-	private final int MAX_LEVEL = 6;
+	private final int MAX_LEVEL = 5;
 	
 	private final JPanel levelPanel = new JPanel();
 	private final JLabel levelTitle = new JLabel("LEVEL");
@@ -40,7 +40,7 @@ public class LevelView extends JFrame {
         	levelBtn[i].setEnabled(false);
         }
         
-        int row = level.size() / 3;
+        int row = level.size() / 3 + 1;
         levelPanel.setLayout(new GridLayout(row, 3, 10, 10));
         levelPanel.setBounds(15, 100, 450, row * 60);
         
