@@ -40,6 +40,7 @@ public class GameView extends JFrame {
 	private Stack<Integer> colors = new Stack<>();
 	private Stack<Integer> moves = new Stack<>();
 	private Stack<Integer> backMovesCounter = new Stack<>();
+	private JLabel undoLimit;
 	private JLabel time = new JLabel();
 	private JButton outBtn, undoBtn;
 	private Timer timer;
@@ -94,6 +95,7 @@ public class GameView extends JFrame {
     	setLocationRelativeTo(null);
     	
     	outAction();
+    	undoLimitAction();
     	undoAction();
     	timerAction();
     	clickBottleAction();
@@ -127,9 +129,19 @@ public class GameView extends JFrame {
         });
     }
     
+    private void undoLimitAction() {
+    	undoLimit = new JLabel();
+    	undoLimit.setLocation(460, 60);
+    	undoLimit.setSize(120, 50);
+    	undoLimit.setVisible(true);
+    	undoLimit.setFont(new Font("Gothic", Font.BOLD, 15));
+    	undoLimit.setText("남은 횟수 : " + (state.getBackLimit() + 1) + " 번");
+    	add(undoLimit);
+    }
+    
     private void undoAction() {
     	JButton undoBtn = util.makeUI("image/Undo.png", 100);
-    	undoBtn.setLocation(480, 20);
+    	undoBtn.setLocation(465, 20);
     	undoBtn.setVisible(true);
     	undoBtn.setSize(100,50);
     	undoBtn.addActionListener(new ActionListener() {
@@ -146,10 +158,10 @@ public class GameView extends JFrame {
     
     private void timerAction() {
     	time = new JLabel();
-    	time.setLocation(420, 20);
+    	time.setLocation(405, 20);
     	time.setSize(100,50);
     	time.setVisible(true);
-    	time.setFont(new Font("Gothic", Font.ITALIC, 20));
+    	time.setFont(new Font("Gothic", Font.BOLD, 20));
         timer = new Timer(time);
         thread = new Thread(timer);
         add(time);
@@ -381,8 +393,8 @@ public class GameView extends JFrame {
     	try {
     		if (state.getFrom() == 10 && state.getTo() == 10) {
     			undo();
-    			//System.out.println("backcount =" + backLimit);
     			state.minusLimit();
+    			undoLimit.setText("남은 횟수: " + (state.getBackLimit() + 1) + " 번");
     			state.setFrom(7);
     			state.setTo(7);
     		} else if (state.getFrom() != 100 && state.getTo() != 100) {
@@ -476,16 +488,15 @@ public class GameView extends JFrame {
     				if(isSolved()) {
     					DataBase dataBase = new DataBase();
     					
-    					System.out.println("시간 = " + second + ":" + millisecond);
+    					//System.out.println("시간 = " + second + ":" + millisecond);
     					
     					User user = new User();
     					int id = user.getUserId();
-    					int userTime = dataBase.getTime(id, level);
+    					float userTime = dataBase.getTime(id, level);
     					int userMove = dataBase.getMove(id, level);
     					
     					String timelabel = time.getText().toString();
-    					//System.out.println(timelabel);
-    					int time = Integer.parseInt(timelabel.split(" : ")[0]);
+    					float time = (float) (Integer.parseInt(timelabel.split(" : ")[0]) + (Integer.parseInt(timelabel.split(" : ")[1]) * 0.01));
     					
     					if (userTime == 0 && userMove == 0) { // 등록된 정보가 없을 경우
     						if(dataBase.insertResult(id, level, state.getMoveCnt(), time)) {

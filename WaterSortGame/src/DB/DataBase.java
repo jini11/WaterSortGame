@@ -90,9 +90,9 @@ public class DataBase extends JFrame{
 		return countLevel;
 	}
 	
-	public int getTime(int user_id, int level) {
+	public float getTime(int user_id, int level) {
 		int Level = level;
-		int countTime = 0;
+		float countTime = 0;
 		try {
 			String logInSql = "select level, time from game where user_id='" + user_id + "';";
 			
@@ -100,12 +100,12 @@ public class DataBase extends JFrame{
 			
 			while (result.next()) {
 				if(result.getInt(1) == Level) {
-					countTime = result.getInt(2);
+					countTime = result.getFloat(2);
 				}
 			}
 			
 		} catch (SQLException e) {
-			System.out.println("레벨 SQL 오류a");
+			System.out.println("select time SQL 오류");
 		}
 		
 		return countTime;
@@ -126,7 +126,7 @@ public class DataBase extends JFrame{
 			}
 			
 		} catch (SQLException e) {
-			System.out.println("레벨 SQL 오류a");
+			System.out.println("select move SQL 오류");
 		}
 		
 		return move;
@@ -158,14 +158,14 @@ public class DataBase extends JFrame{
 		return result;
 	}
 	
-	public boolean insertResult(int id, int level, int move, int time) {
+	public boolean insertResult(int id, int level, int move, float time) {
 		String sql = "insert into game (user_id, level, move, time) values (?, ?, ?, ?);";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, id);
 			pstmt.setInt(2, level);
 			pstmt.setInt(3, move);
-			pstmt.setInt(4, time);
+			pstmt.setFloat(4, time);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("insert SQL 오류");
@@ -174,11 +174,11 @@ public class DataBase extends JFrame{
 		return true;
 	}
 	
-	public boolean updateTime(int id, int level, int time) {
+	public boolean updateTime(int id, int level, float time) {
 		String updateSql = "update game set time=? where user_id=? and level=?;";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(updateSql);
-			pstmt.setInt(1, time);
+			pstmt.setFloat(1, time);
 			pstmt.setInt(2, id);
 			pstmt.setInt(3, level);
 			pstmt.executeUpdate();
@@ -202,7 +202,6 @@ public class DataBase extends JFrame{
 			System.out.println("update SQL 오류");
 			return false;
 		}
-		
 		return true;
 	}
 	
@@ -212,7 +211,7 @@ public class DataBase extends JFrame{
 			String sql = "select * from user";
 			result = stmt.executeQuery(sql);
 		} catch (SQLException e) {
-			System.out.println("get SQL 오류");
+			System.out.println("SQL 오류");
 		}
 		
 		return result;

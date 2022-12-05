@@ -104,12 +104,19 @@ public class RankView extends JFrame {
 				if (result.getInt(2) == beforeRank) {
 					rankIndex--;
 				}
-				rankArea.append("   " + (rankIndex++) + "등\t" + result.getString("username") + "\t     " + result.getInt(2) + "\n");
+				rankArea.append("   " + (rankIndex++) + "등\t" + result.getString("username") + "\t     " + getMoveOrTime(standard, result) + "\n");
 				beforeRank = result.getInt(2);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("결과 받아오지 못함");
 		}
+	}
+	
+	public String getMoveOrTime(String standard, ResultSet result) throws SQLException {
+		if (standard.equals("이동횟수")) {
+			return result.getInt(2) + " 번";
+		}
+		return result.getFloat(2) + " 초";
 	}
 }

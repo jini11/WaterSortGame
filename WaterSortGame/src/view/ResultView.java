@@ -71,7 +71,7 @@ public class ResultView extends JFrame {
     		@Override
     		public void actionPerformed(ActionEvent e) {
     			setVisible(false);
-    			dispose();
+    			//dispose();
     			new RankController();
     		}
     	});
