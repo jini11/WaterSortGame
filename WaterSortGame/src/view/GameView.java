@@ -363,28 +363,15 @@ public class GameView extends JFrame {
         if (moves.peek() != null) {
         	if(backMovesCounter.peek() != null) {
         		peekCount = (int)backMovesCounter.peek();
-        		if((int) backMovesCounter.peek() == 1) {
-        			undoTo = (int) (moves.pop());
-                    undoFrom = (int) (moves.pop());
-                    bottles[undoFrom].add(bottles[undoTo].get(bottles[undoTo].size()-1));
-                    bottles[undoTo].remove(bottles[undoTo].size()-1);
-        		} else {
-        			while(peekCount > 0) {
-        				undoTo = (int) (moves.pop());
-        				undoFrom = (int) (moves.pop());
-                        bottles[undoFrom].add(bottles[undoTo].get(bottles[undoTo].size()-1));
-                        bottles[undoTo].remove(bottles[undoTo].size()-1);
-                        peekCount--;
-                        
-            		}
-        		}
+        		do {
+        			undoTo = (int) moves.pop();
+        			undoFrom = (int) moves.pop();
+        			bottles[undoFrom].add(peek(undoTo));
+        			bottles[undoTo].remove(bottles[undoTo].size() - 1);
+        			peekCount--;
+        		} while (peekCount > 0);
         		backMovesCounter.pop();
-        	} else {
-        		undoTo = (int) (moves.pop());
-        		undoFrom = (int) (moves.pop());
-                bottles[undoFrom].add(bottles[undoTo].get(bottles[undoTo].size()-1));
-                bottles[undoTo].remove(bottles[undoTo].size()-1);
-        	}
+        	} 
             showAll();
         }
     }
@@ -433,13 +420,11 @@ public class GameView extends JFrame {
 						bottleBorder[i].setIcon(toBottle);
 						clickFrom = true;
 						state.setFrom(i);
-						state.setCurrent(i);
 					}
 					else {						
-						bottleBorder[state.getCurrent()].setIcon(fromBottle);
+						bottleBorder[state.getFrom()].setIcon(fromBottle);
 						clickFrom = false;
 						state.setTo(i);
-						state.setCurrent(100);
 					}
 				}
 			}
@@ -488,15 +473,14 @@ public class GameView extends JFrame {
     				if(isSolved()) {
     					DataBase dataBase = new DataBase();
     					
-    					//System.out.println("시간 = " + second + ":" + millisecond);
-    					
     					User user = new User();
     					int id = user.getUserId();
-    					float userTime = dataBase.getTime(id, level);
-    					int userMove = dataBase.getMove(id, level);
+    					float userTime = dataBase.getTime(id, level); // 사용자의 시간 기록 가져오기
+    					int userMove = dataBase.getMove(id, level); // 사용자의 움직임 횟수 기록 가져오기
     					
     					String timelabel = time.getText().toString();
-    					float time = (float) (Integer.parseInt(timelabel.split(" : ")[0]) + (Integer.parseInt(timelabel.split(" : ")[1]) * 0.01));
+    					float time = (float) (Integer.parseInt(timelabel.split(" : ")[0])
+    							+ (Integer.parseInt(timelabel.split(" : ")[1]) * 0.01));
     					
     					if (userTime == 0 && userMove == 0) { // 등록된 정보가 없을 경우
     						if(dataBase.insertResult(id, level, state.getMoveCnt(), time)) {
