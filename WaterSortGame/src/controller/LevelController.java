@@ -30,7 +30,6 @@ public class LevelController {
 			for (int i = 0; i < MAX_LEVEL; i++) {
 				JButton click = (JButton) e.getSource();
 				if (levelView.getLevel(i) == click) {
-					System.out.println(i+1);
 					new GameController(i+1);
 					levelView.setView();
 				}

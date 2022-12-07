@@ -40,7 +40,13 @@ public class LevelView extends JFrame {
         	levelBtn[i].setEnabled(false);
         }
         
-        int row = level.size() / 3 + 1;
+        int row = 0;
+        if (level.size() % 3 == 0) {
+        	row = level.size() / 3;
+        } else {
+        	row = level.size() / 3 + 1;
+        }
+        
         levelPanel.setLayout(new GridLayout(row, 3, 10, 10));
         levelPanel.setBounds(15, 100, 450, row * 60);
         

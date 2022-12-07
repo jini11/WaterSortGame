@@ -21,7 +21,6 @@ public enum Level {
 	
 	public static List<Integer> getMax(int userLevel) {
 		for (Level level : Level.values()) {
-			System.out.println(level.getLevel());
 			if (level.getLevel() == userLevel) {
 				return List.of(level.getMaxColor(), level.getMaxBottle());
 			}

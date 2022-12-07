@@ -271,7 +271,7 @@ public class GameView extends JFrame {
     				count++;
     			}
     		}
-    		if (count > 2) {
+    		if (count > 0) {
     			return false;
     		}
     	}
@@ -294,15 +294,15 @@ public class GameView extends JFrame {
     public boolean isValidMove(int from, int to) {
     	
         if (bottles[from].size() == 0) { // from bottle이 0인 경우
-        	System.out.println("empty");
+        	//System.out.println("empty");
             return false;
         }  
         if (bottles[to].size() >= maxColors) { // to bottle의 maxsize를 초과하는 경우
-        	System.out.println("fill");
+        	//System.out.println("fill");
             return false;
         } 
         if (from == to) { // to, from 같은 위치를 클릭한 경우
-        	System.out.println("same");
+        	//System.out.println("same");
             return false;
         }
         if (!bottles[from].get(bottles[from].size()-1).equals(null) && bottles[to].size() == 0) { // to 물병의 크기가 0일때
@@ -322,7 +322,6 @@ public class GameView extends JFrame {
             } while (peek(from) == peek(to));
             backMovesCounter.push(excount);
             state.plusMoveCnt();
-            //System.out.println("moves : " + moveCnt );
             return true;
             
         } 
@@ -346,9 +345,7 @@ public class GameView extends JFrame {
             } while (peek(from) == peek(to));
             
             backMovesCounter.push(excount2);
-            System.out.println("backmove = " + backMovesCounter.peek());
             state.plusMoveCnt();
-            //System.out.println("moves : " + moveCnt );
             return true;
 
         } 
@@ -362,7 +359,7 @@ public class GameView extends JFrame {
     	
         if (moves.peek() != null) {
         	if(backMovesCounter.peek() != null) {
-        		peekCount = (int)backMovesCounter.peek();
+        		peekCount = (int) backMovesCounter.peek();
         		do {
         			undoTo = (int) moves.pop();
         			undoFrom = (int) moves.pop();
@@ -399,7 +396,7 @@ public class GameView extends JFrame {
                 }
             }
 		} catch (Exception e) {
-        	System.out.println("catch");
+        	//System.out.println("catch");
         	return;
 		}	
     }

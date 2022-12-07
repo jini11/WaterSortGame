@@ -21,7 +21,7 @@ public class DataBase extends JFrame{
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(url, id, pw);
-			System.out.println("DB연결완료");
+			//System.out.println("DB연결완료");
 			
 			stmt = conn.createStatement();
 		} catch (ClassNotFoundException e) {
