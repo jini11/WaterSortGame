@@ -28,12 +28,14 @@ import utils.Timer;
 
 public class GameView extends JFrame {
 
+	private final int MAX_VALUE = 4;
+	
 	private int level;
 	private int maxColors;
 	private int maxBottles;
 	private int[] colorType;
 	private boolean clickFrom;
-	private JLabel[] bottle;
+	private JLabel[] color;
 	private JLabel[] bottleBorder;
 	private Thread thread;
 	private ArrayList<Integer> bottles[];
@@ -50,9 +52,6 @@ public class GameView extends JFrame {
     private ImageIcon toBottle = util.makeImage("image/bottle3.png", 140, 170);
     
     private Color[] waterColor = {Color.red, Color.blue, Color.green, Color.pink, Color.cyan, Color.gray, Color.orange, Color.lightGray};
-	
-//    private int second;
-//    private int millisecond;
     
     private State state;
     
@@ -70,7 +69,7 @@ public class GameView extends JFrame {
     
 	private void Level() {    	
     	colorType = new int[maxColors];
-    	bottle = new JLabel[30];
+    	color = new JLabel[30];
     	bottleBorder = new JLabel[maxBottles];
 		bottles = new ArrayList[maxBottles];
 		
@@ -104,7 +103,7 @@ public class GameView extends JFrame {
         
         fillColor(colors);
 
-        for (int count = 0; count < 4 * maxColors; count++) {
+        for (int count = 0; count < MAX_VALUE * maxColors; count++) {
             fillBottles();
         }
 
@@ -178,36 +177,36 @@ public class GameView extends JFrame {
     }
     
     public void showAll() {
-    	for(int i = 0; i< bottle.length; i++) {
-    		if(bottle[i] != null) {
-    			bottle[i].setVisible(false);
+    	for (int i = 0; i < color.length; i++) {
+    		if(color[i] != null) {
+    			color[i].setVisible(false);
     		}
     	}
     	int z = 0;
     	
-        for(int i = 0; i < maxBottles;i++) {
-        	for(int j = 0; j < bottles[i].size(); j++) {
+        for(int i = 0; i < maxBottles; i++) {
+        	for (int j = 0; j < bottles[i].size(); j++) {
         		int colorNumber = (int) bottles[i].get(j);
-        		bottle[z] = new JLabel();
+        		color[z] = new JLabel();
         		if (colorNumber >= 0 && colorNumber <= 6) {	    			
         			int xPosition = (600 / (maxBottles + 2)) + (600 / (maxBottles + 2)) * i;
 	    			int yPosition = 200 - (j * 20);
-	    			bottle[z].setSize(40,20);
-	    			bottle[z].setOpaque(true);
-	    			bottle[z].setLocation(xPosition, yPosition);
-	    			bottle[z].setBackground(waterColor[colorNumber]);
-	    			add(bottle[z]);
+	    			color[z].setSize(40, 20);
+	    			color[z].setOpaque(true);
+	    			color[z].setLocation(xPosition, yPosition);
+	    			color[z].setBackground(waterColor[colorNumber]);
+	    			add(color[z]);
 	    			z++;
         		}
         	}
         }
         setVisible(true);
-        paint(getGraphics());
+        repaint();
     }
     
     private void fillBottles() {
         int index = generateRandom(0, maxBottles - 2);
-        if (bottles[index].size() < 4) {
+        if (bottles[index].size() < MAX_VALUE) {
             bottles[index].add(colors.pop());
         } else {
             fillBottles();
@@ -215,8 +214,8 @@ public class GameView extends JFrame {
     }
 
     private void fillColor(Stack<Integer> colors) {
-        for (int x = 0; x < 4; x++) {
-        	for(int i = 0; i < maxColors;i++) {
+        for (int x = 0; x < MAX_VALUE; x++) {
+        	for (int i = 0; i < maxColors; i++) {
         		colors.push(colorType[i]);
         	}
         }
@@ -226,27 +225,9 @@ public class GameView extends JFrame {
         return (int) ((Math.random() * (max - min)) + min);
     }  
     
-//    public JButton getOut() {
-//    	return outBtn;
-//    }
-//    
-//    public JButton getUndo() {
-//    	return undoBtn;
-//    }
-//    
-//    public JLabel getTimer() {
-//    	return time;
-//    }
-//    
-//    public JLabel getBottle(int idx) {
-//    	return bottleBorder[idx];
-//    }
-    
     public void setView() {
     	setVisible(false);
     }
-    
-    // ----------------------------------------
     
     public boolean isSolved() { 
         for (int x = 0; x < maxBottles; x++) {
@@ -279,7 +260,7 @@ public class GameView extends JFrame {
     }
     
     private boolean checkBottleSize(int x) {
-    	return bottles[x].size() == 4 || bottles[x].size() == 0;
+    	return bottles[x].size() == MAX_VALUE || bottles[x].size() == 0;
     }
     
     private int peek(int x) {
@@ -294,61 +275,33 @@ public class GameView extends JFrame {
     public boolean isValidMove(int from, int to) {
     	
         if (bottles[from].size() == 0) { // from bottle이 0인 경우
-        	//System.out.println("empty");
             return false;
         }  
-        if (bottles[to].size() >= maxColors) { // to bottle의 maxsize를 초과하는 경우
-        	//System.out.println("fill");
+        if (bottles[to].size() >= MAX_VALUE) { // to bottle의 maxsize를 초과하는 경우
             return false;
         } 
         if (from == to) { // to, from 같은 위치를 클릭한 경우
-        	//System.out.println("same");
             return false;
         }
-        if (!bottles[from].get(bottles[from].size()-1).equals(null) && bottles[to].size() == 0) { // to 물병의 크기가 0일때
+        if ((peek(from) != ' ' && bottles[to].size() == 0) ||
+        		((bottles[from].size() != 0 && bottles[to].size() != 0) &&
+        		peek(from) == peek(to))) {
         	int excount = 0;
-            do {
-            	if(bottles[to].size() <= 4) {
-                	bottles[to].add(bottles[from].get(bottles[from].size()-1));
-                    bottles[from].remove(bottles[from].size()-1);
-                    moves.push(from);
-                    moves.push(to);
-                    excount++;
-            	}
-            	else {
-            		break;
-            	}
-
-            } while (peek(from) == peek(to));
-            backMovesCounter.push(excount);
-            state.plusMoveCnt();
-            return true;
-            
-        } 
-        if ((!bottles[from].get(bottles[from].size()-1).equals(null) && !bottles[to].get(bottles[to].size()-1).equals(null))
-                && bottles[from].get(bottles[from].size()-1).equals(bottles[to].get(bottles[to].size()-1))) {//to, from 물병의 크기가 0이 아니고, form물병의 최상단이
-        	//to 물병의 최상단과 같을 때
-        	int excount2 = 0;
-            do {
-            	if(bottles[to].size() < 4) {
-            		bottles[to].add(bottles[from].get(bottles[from].size()-1));
-                    bottles[from].remove(bottles[from].size()-1);
-                    moves.push(from);
-                    moves.push(to);
-                    excount2++;
-            	}
-            	else {
-            		break;
-            	}
-                
-                
-            } while (peek(from) == peek(to));
-            
-            backMovesCounter.push(excount2);
-            state.plusMoveCnt();
-            return true;
-
-        } 
+        	do {
+        		if (bottles[to].size() < MAX_VALUE) {
+        			bottles[to].add(bottles[from].get(bottles[from].size() - 1));
+        			bottles[from].remove(bottles[from].size() - 1);
+        			moves.push(from);
+        			moves.push(to);
+        			excount++;
+        		} else {
+        			break;
+        		}
+        	} while (peek(from) == peek(to));
+        	backMovesCounter.push(excount);
+        	state.plusMoveCnt();
+        	return true;
+        }
         return false;
     }
 
@@ -358,7 +311,7 @@ public class GameView extends JFrame {
     	int peekCount = 0;
     	
         if (moves.peek() != null) {
-        	if(backMovesCounter.peek() != null) {
+        	if (backMovesCounter.peek() != null) {
         		peekCount = (int) backMovesCounter.peek();
         		do {
         			undoTo = (int) moves.pop();
@@ -384,19 +337,16 @@ public class GameView extends JFrame {
     		} else if (state.getFrom() != 100 && state.getTo() != 100) {
 
                 if (isValidMove(state.getFrom(), state.getTo())) {
-                    //System.out.println("move");
                     showAll();
                     state.setFrom(100);
                     state.setTo(100);
                 } else {
-                	//System.out.println("move ex");
                     showAll();
                     state.setFrom(100);
                     state.setTo(100);
                 }
             }
 		} catch (Exception e) {
-        	//System.out.println("catch");
         	return;
 		}	
     }
@@ -410,15 +360,14 @@ public class GameView extends JFrame {
 			
 		@Override
 		public void mousePressed(MouseEvent e) {
-			JLabel click = (JLabel)e.getSource();
-			for(int i = 0; i < maxBottles; i++) {
-				if(bottleBorder[i] == click) {
-					if(!clickFrom) {
+			JLabel click = (JLabel) e.getSource();
+			for (int i = 0; i < maxBottles; i++) {
+				if (bottleBorder[i] == click) {
+					if (!clickFrom) {
 						bottleBorder[i].setIcon(toBottle);
 						clickFrom = true;
 						state.setFrom(i);
-					}
-					else {						
+					} else {						
 						bottleBorder[state.getFrom()].setIcon(fromBottle);
 						clickFrom = false;
 						state.setTo(i);
@@ -467,7 +416,7 @@ public class GameView extends JFrame {
     				
     				operation();
     				
-    				if(isSolved()) {
+    				if (isSolved()) {
     					DataBase dataBase = new DataBase();
     					
     					User user = new User();
@@ -480,7 +429,7 @@ public class GameView extends JFrame {
     							+ (Integer.parseInt(timelabel.split(" : ")[1]) * 0.01));
     					
     					if (userTime == 0 && userMove == 0) { // 등록된 정보가 없을 경우
-    						if(dataBase.insertResult(id, level, state.getMoveCnt(), time)) {
+    						if (dataBase.insertResult(id, level, state.getMoveCnt(), time)) {
     							JOptionPane.showMessageDialog(null, "순위 등록 완료");
     						}
     					} else {

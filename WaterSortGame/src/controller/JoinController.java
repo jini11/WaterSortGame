@@ -26,33 +26,32 @@ public class JoinController {
 	}
 	
 	class DuplicateAction implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			DataBase db = new DataBase();
 			String id = joinView.getId();
             
             if (validateId(id)) {
-            
-	            try {
-	              ResultSet result = db.selectResult();
-	              
-	              while(result.next()) {
-	                   String user_ID = result.getString("username");
-	                   if(id.equals(user_ID)) {
-	                	   checkDuplicate = true; //중복된 곳 있을 경우
-	                   }
-	              }
-	              
-	              if(checkDuplicate) { // 아이디 중복되었을 경우
-	             	 JOptionPane.showMessageDialog(null, "아이디가 중복되었습니다", "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
-	             	checkDuplicate = false;
-	             } else {
-	              	JOptionPane.showMessageDialog(null, "중복된 아이디가 없습니다");
-	              	joinView.setDuplicate();
-	              	isDuplicate = false;
-	              }
-	            } catch (Exception e1) {}
+            	try {
+            		ResultSet result = db.selectResult();
+            		
+            		while (result.next()) {
+            			String user_ID = result.getString("username");
+            			if (id.equals(user_ID)) {
+            				checkDuplicate = true; // 중복된 곳 있을 경우
+            			}
+            		}
+            		
+            		if (checkDuplicate) { // 아이디 중복되었을 경우
+            			JOptionPane.showMessageDialog(null, "아이디가 중복되었습니다",
+            					"ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
+            			checkDuplicate = false;
+            		} else {
+            			JOptionPane.showMessageDialog(null, "중복된 아이디가 없습니다");
+            			joinView.setDuplicate();
+            			isDuplicate = false;
+            		}
+            	} catch (Exception exception) {}
             }
 		}
 		
